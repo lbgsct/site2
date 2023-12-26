@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Admin Board</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 30px;
+            background-color: #f4f4f4;
+        }
+        h1 {
+            text-align: center;
+        }
+        form {
+            background-color: #fff;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        h2 {
+            margin-top: 0;
+        }
+        input[type="text"],
+        input[type="datetime-local"],
+        input[type="number"],
+        input[type="submit"] {
+            margin: 5px 0;
+            padding: 8px;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+            width: 100%;
+            box-sizing: border-box;
+        }
+        input[type="submit"] {
+            background-color: #4CAF50;
+            color: white;
+            cursor: pointer;
+        }
+        input[type="submit"]:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <h1>Admin Board</h1>
+    
+    <!-- Форма для добавления рейса -->
+    <form action="/admin" method="post">
+        <h2>Add Flight</h2>
+        <input type="hidden" name="action" value="addFlight">
+        Airline: <input type="text" name="airline"><br>
+        Departure Time: <input type="datetime-local" name="departure_time"><br>
+        Arrival Time: <input type="datetime-local" name="arrival_time"><br>
+        Origin: <input type="text" name="origin"><br>
+        Destination: <input type="text" name="destination"><br>
+        Ticket Price: <input type="number" name="ticket_price"><br>
+        <input type="submit" value="Add Flight">
+    </form>
+
+    <!-- Форма для добавления аэропорта -->
+    <form action="/admin" method="post">
+        <h2>Add Airport</h2>
+        <input type="hidden" name="action" value="addAirport">
+        Airport Code: <input type="text" name="airport_code"><br>
+        Airport Name: <input type="text" name="airport_name"><br>
+        Location: <input type="text" name="location"><br>
+        Other Characteristics: <input type="text" name="other_characteristics"><br>
+        <input type="submit" value="Add Airport">
+    </form>
+
+    <!-- Форма для удаления аэропорта -->
+    <form action="/admin" method="post">
+        <h2>Delete Airport</h2>
+        <input type="hidden" name="action" value="deleteAirport">
+        Airport Code: <input type="text" name="airport_code"><br>
+        <input type="submit" value="Delete Airport">
+    </form>
+
+    <!-- Форма для удаления рейса -->
+    <form action="/admin" method="post">
+        <h2>Delete Flight</h2>
+        <input type="hidden" name="action" value="deleteFlight">
+        Flight ID: <input type="text" name="flight_id"><br>
+        <input type="submit" value="Delete Flight">
+    </form>
+</body>
+</html>
+
+
+

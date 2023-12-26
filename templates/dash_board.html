@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Рейсы</title>
+
+    <style>
+        /* Общие стили */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f7f7f7;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        /* Стили для формы */
+        form {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        label {
+            margin-right: 10px;
+            color: #333;
+        }
+
+        input[type="text"],
+        input[type="submit"] {
+            padding: 8px;
+            margin-bottom: 10px;
+            border-radius: 3px;
+            border: 1px solid #ccc;
+        }
+
+        input[type="submit"] {
+            background-color: #1565c0;
+            color: white;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        input[type="submit"]:hover {
+            background-color: #1e88e5;
+        }
+
+        /* Стили для таблицы */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            background-color: #fff;
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+            color: #333;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f5f5f5;
+        }
+
+        tr:hover {
+            background-color: #e0e0e0;
+        }
+
+        /* Стили для ссылки */
+        .buy-link {
+            display: inline-block;
+            border: 1px solid #ccc;
+            background-color: #f0f0f0;
+            padding: 8px 15px;
+            text-decoration: none;
+            color: #333;
+            border-radius: 3px;
+            transition: background-color 0.3s ease;
+            margin-top: 20px;
+        }
+
+        .buy-link:hover {
+            background-color: #af1212;
+            color: white;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Рейсы</h1>
+    <form method="GET">
+        <label for="departure">Departure Airport:</label>
+        <input type="text" id="departure" name="departure">
+
+        <label for="arrival">Arrival Airport:</label>
+        <input type="text" id="arrival" name="arrival">
+
+        <input type="submit" value="Search">
+    </form>
+    <table>
+        <thead>
+            <tr>
+                <th>Flight ID</th>
+                <th>Airline</th>
+                <th>Departure Time</th>
+                <th>Arrival Time</th>
+                <th>Departure Airport</th>
+                <th>Arrival Airport</th>
+                <th>Ticket Price</th>
+            </tr>
+        </thead>
+        <tbody>
+            {{ range . }}
+            <tr>
+                <td>{{ .FlightID }}</td>
+                <td>{{ .Airline }}</td>
+                <td>{{ .DepartureTime }}</td>
+                <td>{{ .ArrivalTime }}</td>
+                <td>{{ .DepartureAirport }}</td>
+                <td>{{ .ArrivalAirport }}</td>
+                <td>{{ .TicketPrice }}</td>
+            </tr>
+            {{ end }}
+        </tbody>
+    </table>
+    <a href="/buy/" class="buy-link">Покупка билета</a>
+</body>
+
+</html>
+
+

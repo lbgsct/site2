@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Вход</title>
+    <style>
+        /* Глобальные стили */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f7f7f7;
+        }
+        .container {
+            text-align: center;
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 5px;
+            box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+        }
+        form {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        label {
+            margin-top: 10px;
+            color: #333;
+        }
+        input[type="text"],
+        input[type="password"] {
+            width: 250px;
+            padding: 10px;
+            margin: 5px 0;
+            border-radius: 3px;
+            border: 1px solid #ccc;
+        }
+        input[type="submit"] {
+            width: 150px;
+            padding: 10px;
+            margin-top: 15px;
+            border: none;
+            border-radius: 3px;
+            background-color: #af1212;
+            color: #fff;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        input[type="submit"]:hover {
+            background-color: #d63030;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Войдите в профиль</h1>
+        <form method="post">
+            <label for="user_name">Email:</label><br>
+            <input type="text" id="user_name" name="user_name"><br>
+        
+            <label for="password">Пароль:</label><br>
+            <input type="password" id="password" name="password"><br><br>
+        
+            <input type="submit" value="Войти">
+        </form>
+    </div>
+</body>
+</html>
