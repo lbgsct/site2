@@ -4,9 +4,8 @@
 <head>
     <meta charset="UTF-8">
     <title>Рейсы</title>
-
     <style>
-        /* Общие стили */
+        /* Стили */
         body {
             font-family: Arial, sans-serif;
             margin: 20px;
@@ -19,37 +18,45 @@
             color: #333;
         }
 
-        /* Стили для формы */
         form {
-            text-align: center;
-            margin-bottom: 20px;
+            max-width: 400px;
+            margin: 0 auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.1);
         }
 
         label {
-            margin-right: 10px;
+            display: block;
+            margin-bottom: 10px;
             color: #333;
         }
 
         input[type="text"],
         input[type="submit"] {
+            width: calc(100% - 12px);
             padding: 8px;
-            margin-bottom: 10px;
+            margin-bottom: 15px;
             border-radius: 3px;
             border: 1px solid #ccc;
         }
 
-        input[type="submit"] {
+        button[type="submit"] {
+            width: 100%;
+            padding: 10px;
+            border: none;
+            border-radius: 3px;
             background-color: #1565c0;
-            color: white;
+            color: #fff;
             cursor: pointer;
             transition: background-color 0.3s ease;
         }
 
-        input[type="submit"]:hover {
+        button[type="submit"]:hover {
             background-color: #1e88e5;
         }
 
-        /* Стили для таблицы */
         table {
             width: 100%;
             border-collapse: collapse;
@@ -76,7 +83,6 @@
             background-color: #e0e0e0;
         }
 
-        /* Стили для ссылки */
         .buy-link {
             display: inline-block;
             border: 1px solid #ccc;
@@ -110,25 +116,25 @@
     <table>
         <thead>
             <tr>
-                <th>Flight ID</th>
                 <th>Airline</th>
                 <th>Departure Time</th>
                 <th>Arrival Time</th>
                 <th>Departure Airport</th>
                 <th>Arrival Airport</th>
                 <th>Ticket Price</th>
+                <th>Tickets</th>
             </tr>
         </thead>
         <tbody>
             {{ range . }}
             <tr>
-                <td>{{ .FlightID }}</td>
                 <td>{{ .Airline }}</td>
                 <td>{{ .DepartureTime }}</td>
                 <td>{{ .ArrivalTime }}</td>
                 <td>{{ .DepartureAirport }}</td>
                 <td>{{ .ArrivalAirport }}</td>
                 <td>{{ .TicketPrice }}</td>
+                <td>{{ .Tickets }}</td>
             </tr>
             {{ end }}
         </tbody>
@@ -137,5 +143,7 @@
 </body>
 
 </html>
+
+
 
 

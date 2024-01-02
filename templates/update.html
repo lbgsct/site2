@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Update Flight or Airport</title>
+    <style>
+        /* Ваши стили здесь */
+        /* ... */
+
+        .notification {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #0230c7;
+            color: white;
+            padding: 15px 20px;
+            border-radius: 5px;
+            z-index: 1000;
+        }
+    </style>
+    <script>
+        function showNotification(message) {
+            const notification = document.createElement('div');
+            notification.textContent = message;
+            notification.classList.add('notification');
+
+            document.body.appendChild(notification);
+
+            setTimeout(() => {
+                notification.remove();
+            }, 3000);
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const forms = document.querySelectorAll('form');
+
+            forms.forEach(form => {
+                form.addEventListener('submit', event => {
+                    event.preventDefault();
+
+                    const formData = new FormData(form);
+
+                    fetch('/admin/update/', {
+                            method: 'POST',
+                            body: formData
+                        })
+                        .then(response => {
+                            if (!response.ok) {
+                                throw new Error('Network response was not ok');
+                            }
+                            return response.text();
+                        })
+                        .then(data => {
+                            showNotification('Your entry has been added!');
+                            form.reset();
+                        })
+                        .catch(error => {
+                            console.error('Error:', error);
+                        });
+                });
+            });
+        });
+    </script>
+</head>
+
+<body>
+    <h1>Update Flight or Airport</h1>
+
+    <!-- Форма для редактирования рейса -->
+    <form action="/admin/update/" method="post">
+        <h2>Edit Flight</h2>
+        <input type="hidden" name="action" value="editFlight">
+        Airline: <input type="text" name="airline"><br>
+        Departure Time: <input type="datetime-local" name="departure_time"><br>
+        Arrival Time: <input type="datetime-local" name="arrival_time"><br>
+        Origin: <input type="text" name="origin"><br>
+        Destination: <input type="text" name="destination"><br>
+        Ticket Price: <input type="number" name="ticket_price"><br>
+        <button type="submit">Update Flight</button>
+    </form>
+
+    <!-- Форма для редактирования аэропорта -->
+    <form action="/admin/update/" method="post">
+        <h2>Edit Airport</h2>
+        <input type="hidden" name="action" value="editAirport">
+        Airport Code: <input type="text" name="airport_code"><br>
+        Airport Name: <input type="text" name="airport_name"><br>
+        Location: <input type="text" name="location"><br>
+        Other Characteristics: <input type="text" name="other_characteristics"><br>
+        <button type="submit">Update Airport</button>
+    </form>
+</body>
+
+</html>

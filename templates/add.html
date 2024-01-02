@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Admin Form</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 30px;
+            background-color: #f4f4f4;
+        }
+        h1 {
+            text-align: center;
+        }
+        form {
+            background-color: #fff;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        h2 {
+            margin-top: 0;
+        }
+        input[type="text"],
+        input[type="datetime-local"],
+        input[type="number"],
+        input[type="submit"] {
+            margin: 5px 0;
+            padding: 8px;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+            width: 100%;
+            box-sizing: border-box;
+        }
+        input[type="submit"] {
+            background-color: #0400fdd8;
+            color: white;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        input[type="submit"]:hover {
+            background-color: #0400fdd8;
+        }
+        /* Стили для кнопок ссылок */
+        .link-button {
+            display: inline-block;
+            padding: 12px 20px;
+            text-decoration: none;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+            background-color: #f0f0f0;
+            color: #333;
+            margin-bottom: 10px;
+            transition: background-color 0.3s ease;
+            margin-right: 10px;
+            font-size: 18px;
+        }
+        .link-button:hover {
+            background-color: #e0e0e0;
+        }
+
+        .button-container {
+            text-align: center;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Add Flight or Airport</h1>
+    <form action="/admin/add/" method="post">
+        <input type="hidden" name="action" value="addFlight">
+        <label for="airline">Airline:</label>
+        <input type="text" id="airline" name="airline" required><br>
+        
+        <label for="departure_time">Departure Time (YYYY-MM-DDTHH:MM):</label>
+        <input type="text" id="departure_time" name="departure_time" required><br>
+        
+        <label for="arrival_time">Arrival Time (YYYY-MM-DDTHH:MM):</label>
+        <input type="text" id="arrival_time" name="arrival_time" required><br>
+        
+        <label for="origin">Origin:</label>
+        <input type="text" id="origin" name="origin" required><br>
+        
+        <label for="destination">Destination:</label>
+        <input type="text" id="destination" name="destination" required><br>
+        
+        <label for="ticket_price">Ticket Price:</label>
+        <input type="number" id="ticket_price" name="ticket_price" required><br>
+        
+        <input type="submit" value="Add Flight">
+    </form>
+
+    <form action="/admin/add/" method="post">
+        <input type="hidden" name="action" value="addAirport">
+        <label for="airport_code">Airport Code:</label>
+        <input type="text" id="airport_code" name="airport_code" required><br>
+        
+        <label for="airport_name">Airport Name:</label>
+        <input type="text" id="airport_name" name="airport_name" required><br>
+        
+        <label for="location">Location:</label>
+        <input type="text" id="location" name="location" required><br>
+        
+        <label for="other_characteristics">Other Characteristics:</label>
+        <input type="text" id="other_characteristics" name="other_characteristics"><br>
+        
+        <input type="submit" value="Add Airport">
+    </form>
+</body>
+</html>
