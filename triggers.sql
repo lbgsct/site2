@@ -8,8 +8,13 @@ add constraint users_bookings_fk foreign key (user_id) references Bookings(user_
 
 -- Рейсы
 alter table Flights
-drop constraint if exists flights_tickets_fk,
-add constraint flights_tickets_fk foreign  key  (flight_name) references  Tickets(flight_name) on  delete  cascade;
+drop constraint if exists flights_aircrafts_fk,
+drop constraint if exists flights_airports_departure_fk,
+drop constraint if exists flights_airports_arrival_fk,
+add constraint flights_aircrafts_fk foreign key (aircraft_model) references Aircrafts(aircraft_model) on delete cascade,
+add constraint flights_airports_departure_fk foreign key (airport_departure) references Airports(airport_name) on delete cascade,
+add constraint flights_airports_arrival_fk foreign key (airport_arrival) references Airports(airport_name) on delete cascade;
+
 
 -- Бронирование Билетов
 alter table Bookings
@@ -17,8 +22,8 @@ drop constraint if exists bookings_flights_fk,
 drop constraint if exists bookings_tickets_fk,
 drop constraint if exists bookings_viptickets_fk,
 add constraint bookings_flights_fk foreign key (flight_name) references Flights(flight_name) on delete cascade,
-add constraint bookings_tickets_fk foreign key (ticket_price, seat_number) references Tickets(ticket_price, seat_number) on delete cascade,
-add constraint bookings_viptickets_fk foreign key (vip_seat_number) references VipTickets(vip_seat_number) on delete cascade;
+add constraint bookings_tickets_fk foreign key (seat_number) references Tickets(seat_number) on delete cascade,
+add constraint bookings_viptickets_fk foreign key (vip_seat_number) references VipTickets(seat_number) on delete cascade;
 
 
 -- Оплаты
@@ -87,23 +92,6 @@ before insert or update on tickets
 for each row execute function validate_ticket_price();
 
 
---цена вип билета
-
-create or replace function validate_vip_ticket_price()
-returns trigger as $$
-begin
-    if new.vip_ticket_price > 0 then
-        return new;
-    else
-        raise exception 'invalid vip ticket price for viptickets table';
-    end if;
-end;
-$$ language plpgsql;
-
-create trigger viptickets_price_trigger
-before insert or update on viptickets
-for each row execute function validate_vip_ticket_price();
-
 --проверка места
 
 create or replace function validate_booking_seats()
@@ -136,6 +124,3 @@ $$ language plpgsql;
 create trigger payments_amount_trigger
 before insert or update on payments
 for each row execute function validate_payment_amount();
-
-
-
