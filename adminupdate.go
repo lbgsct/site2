@@ -15,166 +15,259 @@ import (
 func AdminUpdate(w http.ResponseWriter, r *http.Request) {
 
 	if r.Method != http.MethodPost {
-		// Обработка GET-запроса (отображение формы редактирования)
-		tmpl, err := template.ParseFiles("/home/sergey/site2/templates/update.html")
+		flights, err := GetAllFlights(db)
 		if err != nil {
-			http.Error(w, "Internal server error", http.StatusInternalServerError)
+			http.Error(w, "Ошибка при получении данных о рейсах", http.StatusInternalServerError)
 			log.Println(err)
 			return
 		}
-		err = tmpl.Execute(w, nil)
+
+		tickets, err := GetAllTickets(db)
 		if err != nil {
-			http.Error(w, "Internal server error", http.StatusInternalServerError)
+			http.Error(w, "Ошибка при получении данных о билетах", http.StatusInternalServerError)
 			log.Println(err)
+			return
 		}
-		return
+		
+		viptickets, err := GetAllVipTickets(db)
+		if err != nil {
+			http.Error(w, "Ошибка при получении данных о VIP билетах", http.StatusInternalServerError)
+			log.Println(err)
+			return
+		}
+
+		booking, err := GetAllBookings(db)
+		if err != nil {
+			http.Error(w, "Ошибка при получении данных о бронировании", http.StatusInternalServerError)
+			log.Println(err)
+			return
+		}
+		
+		tmpl, err := template.ParseFiles("/home/sergey/site2/templates/update.html")
+		if err != nil {
+			http.Error(w, "Внутренняя ошибка сервера", http.StatusInternalServerError)
+			log.Println(err)
+			return
+		}
+		
+		data := struct {
+			Flights   []Flights
+			Tickets   []Tickets
+			VipTickets []VipTickets
+			BookingDetail []BookingDetail
+		}{
+			Flights:  flights,
+			Tickets: tickets,
+			VipTickets: viptickets,
+			BookingDetail: booking,
+		}
+		
+		err = tmpl.Execute(w, data)
+		if err != nil {
+			http.Error(w, "Внутренняя ошибка сервера", http.StatusInternalServerError)
+			log.Println(err)
+			return
+		}
 	}
 
 	r.ParseForm()
 	action := r.FormValue("action")
 	switch action {
-	case "editFlight":
-		r.ParseForm()
-		departureTimeString := r.FormValue("departure_time")
+	case "updateFlight":
+		err := r.ParseForm()
+		if err != nil {
+			fmt.Println("Ошибка при разборе данных формы:", err)
+			http.Error(w, "Ошибка при разборе данных формы", http.StatusInternalServerError)
+			return
+		}
+		
+		departureTimeString := r.FormValue("departureTime")
 		departureTime, err := time.Parse("2006-01-02T15:04", departureTimeString)
 		if err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
+			fmt.Println("Ошибка при парсинге времени прибытия:", err)
+			http.Error(w, "Ошибка при парсинге времени прибытия", http.StatusInternalServerError)
 			return
 		}
-		arrivalTimeString := r.FormValue("arrival_time")
+		departureTime = departureTime.Add(-3 * time.Hour)
+
+		// Получение времени прибытия из формы и преобразование в тип time.Time
+		arrivalTimeString := r.FormValue("arrivalTime")
 		arrivalTime, err := time.Parse("2006-01-02T15:04", arrivalTimeString)
 		if err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
+			fmt.Println("Ошибка при парсинге времени прибытия:", err)
+			http.Error(w, "Ошибка при парсинге времени прибытия", http.StatusInternalServerError)
 			return
 		}
-		ticketPriceStr := r.FormValue("ticket_price")
-		ticketPrice, err := strconv.ParseFloat(ticketPriceStr, 64)
+		arrivalTime = arrivalTime.Add(-3 * time.Hour)
+		// Создание объекта Flights из данных формы
+		updateFlight := Flights{
+			FlightName:       r.FormValue("flightName"),
+			DepartureTime:    departureTime,
+			ArrivalTime:   	  arrivalTime,
+		}
+	
+		// Добавление рейса в базу данных
+		updated, err := UpdateFlight(updateFlight)
 		if err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
+			fmt.Println("Ошибка при изменении рейса:", err)
+			http.Error(w, "Ошибка при изменении рейса", http.StatusInternalServerError)
 			return
 		}
-		airportIDStr := r.FormValue("airport_id")
-		airportID, err := strconv.Atoi(airportIDStr)
+	
+		if updated {
+			http.Redirect(w, r, "/admin/update/", http.StatusSeeOther)
+		} else {
+			fmt.Fprintln(w, "Не удалось изменить рейс.")
+		}
+
+	case "updateTickets":
+		price, err := strconv.ParseFloat(r.FormValue("price"), 64)
 		if err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
+			http.Error(w, "Ошибка парсинга цены билета", http.StatusBadRequest)
 			log.Println(err)
 			return
 		}
 
-		flight := Fligh{
-			ID:            airportID,
-			Airline:       r.FormValue("airline"),
-			DepartureTime: departureTime,
-			ArrivalTime:   arrivalTime,
-			Origin:        r.FormValue("origin"),
-			Destination:   r.FormValue("destination"),
-			TicketPrice:   ticketPrice,
-		}
+		updateticket := Tickets{
+			FlightName: r.FormValue("flight_name"),
+			Price: price,
+			SeatNumber: r.FormValue("seat_number"),
+			}
 
-		success, err := UpdateFlighs(flight)
+		success, err := UpdateTicketPrice(updateticket)
 		if err != nil {
-			http.Error(w, "Failed to edit flight", http.StatusInternalServerError)
+			http.Error(w, "Ошибка изменения билета", http.StatusInternalServerError)
 			log.Println(err)
 			return
 		}
 		if success {
-			http.Redirect(w, r, "http://localhost:8080/", http.StatusSeeOther)
+			http.Redirect(w, r, "/admin/update/", http.StatusSeeOther)
 			return
 		} else {
-			log.Println("Failed to edit flight in DB")
+			log.Println("Ошибка изменения билета в базе данных")
 		}
-	case "editAirport":
 
-		airportIDStr := r.FormValue("airport_id")
-		airportID, err := strconv.Atoi(airportIDStr)
+	case "updateVipTickets":
+		price, err := strconv.ParseFloat(r.FormValue("price"), 64)
 		if err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
+			http.Error(w, "Ошибка парсинга цены билета", http.StatusBadRequest)
 			log.Println(err)
 			return
 		}
 
-		airport := Airport{
-			ID:                   airportID,
-			AirportCode:          r.FormValue("airport_code"),
-			AirportName:          r.FormValue("airport_name"),
-			Location:             r.FormValue("location"),
-			OtherCharacteristics: r.FormValue("other_characteristics"),
+		// Получаем значение из формы
+		personalConciergeValue := r.FormValue("personal_concierge")
+
+		// Преобразуем строковое значение в булево
+		var personalConcierge bool
+		if personalConciergeValue == "yes" {
+			personalConcierge = true
+		} else {
+			personalConcierge = false
+		}
+		vipticket := VipTickets{
+			FlightName: r.FormValue("flight_name"),
+			Price: price,
+			SeatNumber: r.FormValue("seat_number"),
+			MealChoice: r.FormValue("meal_choice"),
+			DrinkAlkohol: r.FormValue("drink_alcohol_choice"),
+			PersonalConcierge: personalConcierge,
 		}
 
-		success, err := UpdateAirport(airport)
+		success, err := UpdateVipTicket(vipticket)
 		if err != nil {
-			http.Error(w, "Failed to edit airport", http.StatusInternalServerError)
+			http.Error(w, "Ошибка изменения vip-билета", http.StatusInternalServerError)
 			log.Println(err)
 			return
 		}
 		if success {
-			fmt.Fprintf(w, "Airport edited successfully!")
+			http.Redirect(w, r, "/admin/update/", http.StatusSeeOther)
 			return
 		} else {
-			log.Println("Failed to edit airport in DB")
+			log.Println("Ошибка изменения vip-билета в базе данных")
 		}
-		http.Redirect(w, r, "http://localhost:8080/", http.StatusSeeOther)
+	case "updateBooking":
+		bookingID := r.FormValue("booking_id")
+		bookingStatus := r.FormValue("booking_status")
 
+		// Преобразование bookingID в int
+		bookingIDInt, err := strconv.Atoi(bookingID)
+		if err != nil {
+			http.Error(w, "Ошибка преобразования ID брони в число: "+err.Error(), http.StatusInternalServerError)
+			return
+		}
+
+		booking := BookingDetail{
+			BookingID:      bookingIDInt,
+			BookingStatus:  bookingStatus,
+		}
+
+		success, err := UpdateBookingStatus(booking)
+		if err != nil {
+			http.Error(w, "Ошибка обновления статуса брони: "+err.Error(), http.StatusInternalServerError)
+			return
+		}
+
+		if success {
+			http.Redirect(w, r, "/admin/", http.StatusSeeOther)
+			return
+		} else {
+			log.Println("Ошибка обновления статуса брони в базе данных")
+		}
+	
+	
 	default:
-		http.Error(w, "Invalid action", http.StatusBadRequest)
+		http.Error(w, "Переход в дефолт", http.StatusBadRequest)
 
 	}
 }
 
-func UpdateFlighs(flight Fligh) (bool, error) {
-	query := `
-        UPDATE flights
-        SET
-            airline = ?,
-            departure_time = ?,
-            arrival_time = ?,
-            origin = ?,
-            destination = ?,
-            ticket_price = ?
-        WHERE
-            id = ?
-    `
+func UpdateFlight(flight Flights) (bool, error) {
+    // Вызываем хранимую процедуру с переданными аргументами
+    _, err := db.Exec("CALL UpdateFlight($1, $2, $3)",
+        flight.FlightName, flight.DepartureTime, flight.ArrivalTime,)
+    if err != nil {
+        fmt.Println("Ошибка при вызове процедуры UpdateFlight:", err)
+        return false, err
+    }
 
-	// Предполагается, что у вас есть подключение к базе данных с именем db
-	// Замените db на ваше актуальное соединение с базой данных
-
-	result, err := db.Exec(query, flight.Airline, flight.DepartureTime, flight.ArrivalTime, flight.Origin, flight.Destination, flight.TicketPrice, flight.ID)
-	if err != nil {
-		return false, err
-	}
-
-	rowsAffected, err := result.RowsAffected()
-	if err != nil {
-		return false, err
-	}
-
-	return rowsAffected > 0, nil
+    return true, nil
 }
 
-func UpdateAirport(airport Airport) (bool, error) {
-	query := `
-        UPDATE airports
-        SET
-            airport_code = ?,
-            airport_name = ?,
-            location = ?,
-            other_characteristics = ?
-        WHERE
-            id = ?
-    `
-
-	// Предполагается, что у вас есть подключение к базе данных с именем db
-	// Замените db на ваше актуальное соединение с базой данных
-
-	result, err := db.Exec(query, airport.AirportCode, airport.AirportName, airport.Location, airport.OtherCharacteristics, airport.ID)
+func UpdateTicketPrice(ticket Tickets) (bool, error) {
+	_, err := db.Exec("CALL UpdateTicketPrice ($1, $2, $3)", ticket.FlightName, ticket.SeatNumber, ticket.Price)
 	if err != nil {
 		return false, err
 	}
-
-	rowsAffected, err := result.RowsAffected()
 	if err != nil {
-		return false, err
-	}
+        fmt.Println("Ошибка при вызове процедуры UpdateTicketPrice:", err)
+        return false, err
+    }
 
-	return rowsAffected > 0, nil
+    return true, nil
 }
+
+func UpdateVipTicket(vipticket VipTickets) (bool, error) {
+	_, err := db.Exec("CALL  UpdateVIPTicket($1, $2, $3, $4, $5, $6)", vipticket.FlightName,vipticket.SeatNumber, vipticket.Price, vipticket.MealChoice, vipticket.DrinkAlkohol, vipticket.PersonalConcierge)
+	if err != nil {
+		return false, err
+	}
+	if err != nil {
+        fmt.Println("Ошибка при вызове процедуры InsertTickets:", err)
+        return false, err
+    }
+
+    return true, nil
+}
+
+func UpdateBookingStatus(booking BookingDetail) (bool, error) {
+	_, err := db.Exec("CALL update_booking_status($1, $2)", booking.BookingID, booking.BookingStatus)
+	if err != nil {
+		fmt.Println("Error calling update_booking_status procedure:", err)
+		return false, err
+	}
+
+	return true, nil
+}
+
+

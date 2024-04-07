@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Удаление</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 30px;
+            background-color: #f4f4f4;
+        }
+        h1 {
+            text-align: center;
+        }
+        form {
+            background-color: #fff;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        h2 {
+            margin-top: 0;
+        }
+        input[type="text"],
+        input[type="datetime-local"],
+        input[type="number"],
+        input[type="submit"] {
+            margin: 5px 0;
+            padding: 8px;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+            width: 100%;
+            box-sizing: border-box;
+        }
+        input[type="submit"] {
+            background-color: #0400fdd8;
+            color: white;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        input[type="submit"]:hover {
+            background-color: #0400fdd8;
+        }
+        /* Стили для таблиц */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        table th,
+        table td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        thead {
+            background-color: #f5f5f5;
+        }
+
+        tbody tr:nth-child(odd) {
+            background-color: #f9f9f9;
+        }
+
+        /* Стили для форм */
+        form {
+            background-color: #fff;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        form label {
+            display: block;
+            margin-bottom: 6px;
+        }
+
+        form input[type="text"],
+        form input[type="datetime-local"],
+        form input[type="number"],
+        form input[type="submit"],
+        form select {
+            width: calc(100% - 10px);
+            padding: 8px;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+            margin-bottom: 10px;
+            box-sizing: border-box;
+        }
+
+        form input[type="submit"] {
+            background-color: #0400fdd8;
+            color: white;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        form input[type="submit"]:hover {
+            background-color: #0400fd;
+        }
+        /* Стили для кнопок ссылок */
+        .link-button {
+            display: inline-block;
+            padding: 12px 20px;
+            text-decoration: none;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+            background-color: #f0f0f0;
+            color: #333;
+            margin-bottom: 10px;
+            transition: background-color 0.3s ease;
+            margin-right: 10px;
+            font-size: 18px;
+        }
+        .link-button:hover {
+            background-color: #e0e0e0;
+        }
+
+        .button-container {
+            text-align: center;
+            margin-top: 20px;
+        }
+        .logout-button {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            padding: 10px 20px;
+            text-decoration: none;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+            background-color: #f0f0f0;
+            color: #333;
+            font-size: 16px;
+        }
+        .logout-button:hover {
+            background-color: #0400fdd8;
+            color: white;
+        }
+        .back-button {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            padding: 10px 20px;
+            text-decoration: none;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+            background-color: #f0f0f0;
+            color: #333;
+            font-size: 16px;
+        }
+        .back-button:hover {
+            background-color: #0400fdd8;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <h1>Удаление рейса, аэропорта, самолета, бронирования</h1>
+    <a href="/admin/logout/" class="logout-button">Выйти</a>
+    <a href="/admin/" class="back-button">Назад</a>
+
+    <h2>Список рейсов</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Название рейса</th>
+                <th>Авиакомпания</th>
+                <th>Модель самолета</th>
+                <th>Аэропорт отправления</th>
+                <th>Аэропорт прибытия</th>
+                <th>Время отправления</th>
+                <th>Время прибытия</th>
+                <th>Дистанция</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Вставка данных в HTML таблицу -->
+            {{range .Flights}}
+            <tr>
+                <td>{{.FlightName}}</td>
+                <td>{{.Airline}}</td>
+                <td>{{.AircraftModel}}</td>
+                <td>{{.DepartureAirport}}</td>
+                <td>{{.ArrivalAirport}}</td>
+                <td>{{.DepartureTime}}</td>
+                <td>{{.ArrivalTime}}</td>
+                <td>{{.Destination}}</td>
+            </tr>
+            {{end}}
+        </tbody>
+    </table>
+
+    <form action="/admin/delete/" method="post">
+        <input type="hidden" name="action" value="deleteFlight">
+
+            <label for="flight_name">Название рейса:</label><br>
+            <input type="text" id="flight_name" name="flight_name"><br>
+            
+            <input type="submit" value="Удалить рейс">
+    </form>
+
+
+    <h2>Список аэропортов</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Название аэропорта</th>
+                <th>Город</th>
+            </tr>
+        </thead>
+        <tbody>
+                <!-- Вставка данных в HTML таблицу -->
+            {{range .Airports}}
+            <tr>
+                <td>{{.AirportName}}</td>
+                <td>{{.AirportCity}}</td>
+            </tr>
+            {{end}}
+        </tbody>
+    </table>
+    <form action="/admin/delete/" method="post">
+        <input type="hidden" name="action" value="deleteAirport">
+        
+        <label for="airport_name">Аэропорт:</label>
+        <input type="text" id="airport_name" name="airport_name" required><br>
+        
+        <input type="submit" value= "Удалить аэропорт">
+    </form>
+
+    <h2>Список Самолетов</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Модель</th>
+                <th>Количество мест</th>
+                <th>Состояние</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Вставка данных в HTML таблицу -->
+            {{range .Aircrafts}}
+            <tr>
+                <td>{{.AircraftModel}}</td>
+                <td>{{.TotalSeats}}</td>
+                <td>{{.AircraftCondition}}</td>
+            </tr>
+            {{end}}
+        </tbody>
+    </table>
+
+    <form action="/admin/delete/" method="post">
+        <input type="hidden" name="action" value="deleteAircraft">
+        
+        <label for="aircraft_model">Модель самолета:</label>
+        <input type="text" id="aircraft_model" name="aircraft_model" required><br>
+        
+        <input type="submit" value= "Удалить самолет">
+    </form>
+
+    <h2>Список Бронирований</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>ID брони</th>
+                <th>ID пользователя</th>
+                <th>ID билета</th>
+                <th>Рейс</th>
+                <th>Цена</th>
+                <th>Место</th>
+                <th>Статус</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Вставка данных в HTML таблицу -->
+            {{range .BookingDetail}}
+            <tr>
+                <td>{{.BookingID}}</td>
+                <td>{{.UserID}}</td>
+                <td>{{.TicketID}}</td>
+                <td>{{.FlightName}}</td>
+                <td>{{.TicketPrice}}</td>
+                <td>{{.SeatNumber}}</td>
+                <td>{{.BookingStatus}}</td>
+            </tr>
+            {{end}}
+        </tbody>
+    </table>
+
+    <form action="/admin/delete/" method="post">
+        <input type="hidden" name="action" value="deleteBooking">
+        
+        <label for="id_booking">ID брони:</label>
+        <input type="text" id="id_booking" name="id_booking" required><br>
+        
+        <input type="submit" value= "Удалить бронь">
+    </form>
+</body>
+</html>

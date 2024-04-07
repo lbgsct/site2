@@ -1,97 +1,352 @@
 <!DOCTYPE html>
-<html lang="en">
-
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Update Flight or Airport</title>
+    <title>Изменение</title>
     <style>
-        /* Ваши стили здесь */
-        /* ... */
-
-        .notification {
-            position: fixed;
-            top: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            background-color: #0230c7;
+        body {
+            font-family: Arial, sans-serif;
+            margin: 30px;
+            background-color: #f4f4f4;
+        }
+        h1 {
+            text-align: center;
+        }
+        form {
+            background-color: #fff;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        h2 {
+            margin-top: 0;
+        }
+        input[type="text"],
+        input[type="datetime-local"],
+        input[type="number"],
+        input[type="submit"] {
+            margin: 5px 0;
+            padding: 8px;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+            width: 100%;
+            box-sizing: border-box;
+        }
+        input[type="submit"] {
+            background-color: #0400fdd8;
             color: white;
-            padding: 15px 20px;
-            border-radius: 5px;
-            z-index: 1000;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        input[type="submit"]:hover {
+            background-color: #0400fdd8;
+        }
+        form {
+            display: table;
+            width: 100%;
+        }
+
+        /* Общие стили таблиц */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        table th,
+        table td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        /* Стили для заголовков таблиц */
+        thead {
+            background-color: #f5f5f5;
+        }
+
+        /* Стили для четных и нечетных строк */
+        tbody tr:nth-child(odd) {
+            background-color: #f9f9f9;
+        }
+
+        /* Стили для форм */
+        form {
+            background-color: #fff;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        form label {
+            display: block;
+            margin-bottom: 6px;
+        }
+
+        form input[type="text"],
+        form input[type="datetime-local"],
+        form input[type="number"],
+        form input[type="submit"],
+        form select {
+            width: calc(100% - 10px);
+            padding: 8px;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+            margin-bottom: 10px;
+            box-sizing: border-box;
+        }
+
+        form input[type="submit"] {
+            background-color: #0400fdd8;
+            color: white;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        form input[type="submit"]:hover {
+            background-color: #0400fd;
+        }
+        /* Стили для кнопок ссылок */
+        .link-button {
+            display: inline-block;
+            padding: 12px 20px;
+            text-decoration: none;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+            background-color: #f0f0f0;
+            color: #333;
+            margin-bottom: 10px;
+            transition: background-color 0.3s ease;
+            margin-right: 10px;
+            font-size: 18px;
+        }
+        .link-button:hover {
+            background-color: #e0e0e0;
+        }
+
+        .button-container {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .logout-button {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            padding: 10px 20px;
+            text-decoration: none;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+            background-color: #f0f0f0;
+            color: #333;
+            font-size: 16px;
+        }
+        .logout-button:hover {
+            background-color: #d32f2f;
+            color: white;
+        }
+        .back-button {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            padding: 10px 20px;
+            text-decoration: none;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+            background-color: #f0f0f0;
+            color: #333;
+            font-size: 16px;
+        }
+        .back-button:hover {
+            background-color: #0400fdd8;
+            color: white;
         }
     </style>
-    <script>
-        function showNotification(message) {
-            const notification = document.createElement('div');
-            notification.textContent = message;
-            notification.classList.add('notification');
-
-            document.body.appendChild(notification);
-
-            setTimeout(() => {
-                notification.remove();
-            }, 3000);
-        }
-
-        document.addEventListener('DOMContentLoaded', () => {
-            const forms = document.querySelectorAll('form');
-
-            forms.forEach(form => {
-                form.addEventListener('submit', event => {
-                    event.preventDefault();
-
-                    const formData = new FormData(form);
-
-                    fetch('/admin/update/', {
-                            method: 'POST',
-                            body: formData
-                        })
-                        .then(response => {
-                            if (!response.ok) {
-                                throw new Error('Network response was not ok');
-                            }
-                            return response.text();
-                        })
-                        .then(data => {
-                            showNotification('Your entry has been added!');
-                            form.reset();
-                        })
-                        .catch(error => {
-                            console.error('Error:', error);
-                        });
-                });
-            });
-        });
-    </script>
 </head>
-
 <body>
-    <h1>Update Flight or Airport</h1>
-
-    <!-- Форма для редактирования рейса -->
+    <h1>Изменение рейса, билета, vip-билета</h1>
+    <a href="/admin/logout/" class="logout-button">Выйти</a>
+    <a href="/admin/" class="back-button">Назад</a>
+    <h2>Список рейсов</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Название рейса</th>
+                <th>Авиакомпания</th>
+                <th>Модель самолета</th>
+                <th>Аэропорт отправления</th>
+                <th>Аэропорт прибытия</th>
+                <th>Время отправления</th>
+                <th>Время прибытия</th>
+                <th>Дистанция</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Вставка данных в HTML таблицу -->
+            {{range .Flights}}
+            <tr>
+                <td>{{.FlightName}}</td>
+                <td>{{.Airline}}</td>
+                <td>{{.AircraftModel}}</td>
+                <td>{{.DepartureAirport}}</td>
+                <td>{{.ArrivalAirport}}</td>
+                <td>{{.DepartureTime}}</td>
+                <td>{{.ArrivalTime}}</td>
+                <td>{{.Destination}}</td>
+            </tr>
+            {{end}}
+        </tbody>
+    </table>
     <form action="/admin/update/" method="post">
-        <h2>Edit Flight</h2>
-        <input type="hidden" name="action" value="editFlight">
-        Airline: <input type="text" name="airline"><br>
-        Departure Time: <input type="datetime-local" name="departure_time"><br>
-        Arrival Time: <input type="datetime-local" name="arrival_time"><br>
-        Origin: <input type="text" name="origin"><br>
-        Destination: <input type="text" name="destination"><br>
-        Ticket Price: <input type="number" name="ticket_price"><br>
-        <button type="submit">Update Flight</button>
+            <input type="hidden" name="action" value="updateFlight">
+
+            <label for="flightName">Название рейса:</label><br>
+            <input type="text" id="flightName" name="flightName"><br>
+            
+            <label for="departureTime">Время отправления:</label><br>
+            <input type="datetime-local" id="departureTime" name="departureTime"><br>
+            
+            <label for="arrivalTime">Время прибытия:</label><br>
+            <input type="datetime-local" id="arrivalTime" name="arrivalTime"><br>
+        
+            
+            <input type="submit" value="Изменить рейс">
     </form>
 
-    <!-- Форма для редактирования аэропорта -->
+
+    <h2>Список билетов</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Рейс</th>
+                <th>Цена</th>
+                <th>Место</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Вставка данных в HTML таблицу -->
+            {{range .Tickets}}
+            <tr>
+                <td>{{.FlightName}}</td>
+                <td>{{.Price}}</td>
+                <td>{{.SeatNumber}}</td>
+            </tr>
+            {{end}}
+        </tbody>
+    </table>
     <form action="/admin/update/" method="post">
-        <h2>Edit Airport</h2>
-        <input type="hidden" name="action" value="editAirport">
-        Airport Code: <input type="text" name="airport_code"><br>
-        Airport Name: <input type="text" name="airport_name"><br>
-        Location: <input type="text" name="location"><br>
-        Other Characteristics: <input type="text" name="other_characteristics"><br>
-        <button type="submit">Update Airport</button>
+        <input type="hidden" name="action" value="updateTickets">
+        
+        <label for="flight_name">Рейс:</label>
+        <input type="text" id="flight_name" name="flight_name" required><br>
+        
+        <label for="seat_number">Место:</label>
+        <input type="text" id="seat_number" name="seat_number" required><br>
+
+        <label for="price">Стоимость:</label>
+        <input type="text" id="price" name="price" required><br>    
+        
+        <input type="submit" value="Изменить билет">
     </form>
+
+    <h2>Список VIP билетов</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Рейс</th>
+                <th>Цена</th>
+                <th>Место</th>
+                <th>Обед</th>
+                <th>Алкоголь</th>
+                <th>Консьерж</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Вставка данных в HTML таблицу -->
+            {{range .VipTickets}}
+            <tr>
+                <td>{{.FlightName}}</td>
+                <td>{{.Price}}</td>
+                <td>{{.SeatNumber}}</td>
+                <td>{{.MealChoice}}</td>
+                <td>{{.DrinkAlkohol}}</td>
+                <td>{{.PersonalConcierge}}</td>
+            </tr>
+            {{end}}
+        </tbody>
+    </table>
+    <form action="/admin/update/" method="post">
+        <input type="hidden" name="action" value="updateVipTickets">
+        
+        <label for="flight_name">Рейс:</label>
+        <input type="text" id="flight_name" name="flight_name" required><br>
+        
+        <label for="price">Стоимость:</label>
+        <input type="text" id="price" name="price" required><br>    
+
+        <label for="seat_number">Место:</label>
+        <input type="text" id="seat_number" name="seat_number" required><br> 
+        
+        <label for="meal_choice">Обед:</label>
+        <input type="text" id="meal_choice" name="meal_choice" required><br>
+
+        <label for="drink_alcohol_choice">Алкоголь:</label>
+        <input type="text" id="drink_alcohol_choice" name="drink_alcohol_choice" required><br>
+
+        <label for="personal_concierge">Персональный консьерж:</label>
+        <select id="personal_concierge" name="personal_concierge">
+            <option value="yes">Да</option>
+            <option value="no">Нет</option>
+        
+        <input type="submit" value="Изменить vip билет">
+    </form>
+
+
+    <h2>Список Бронирований</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>ID брони</th>
+                <th>ID пользователя</th>
+                <th>ID билета</th>
+                <th>Рейс</th>
+                <th>Цена</th>
+                <th>Место</th>
+                <th>Статус</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Вставка данных в HTML таблицу -->
+            {{range .BookingDetail}}
+            <tr>
+                <td>{{.BookingID}}</td>
+                <td>{{.UserID}}</td>
+                <td>{{.TicketID}}</td>
+                <td>{{.FlightName}}</td>
+                <td>{{.TicketPrice}}</td>
+                <td>{{.SeatNumber}}</td>
+                <td>{{.BookingStatus}}</td>
+            </tr>
+            {{end}}
+        </tbody>
+    </table>
+
+    <form action="/admin/update/" method="post">
+        <input type="hidden" name="action" value="updateBooking">
+
+        <label for="booking_id">Номер брони:</label>
+        <input type="text" id="booking_id" name="booking_id" required><br>
+
+        <label for="booking_status">Статус бронирования:</label>
+        <select id="booking_status" name="booking_status">
+            <option value="Pending">Ожидание</option>
+            <option value="Confirmed">Подтверждение</option>/option>
+        
+        <input type="submit" value="Изменить статус брони">
+    </form>
+    
+
 </body>
-
 </html>

@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Admin Board</title>
+    <title>Админ</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -11,71 +11,103 @@
         h1 {
             text-align: center;
         }
-        form {
-            background-color: #fff;
-            padding: 20px;
-            margin-bottom: 20px;
-            border-radius: 8px;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-        }
-        h2 {
-            margin-top: 0;
-        }
-        input[type="text"],
-        input[type="datetime-local"],
-        input[type="number"],
-        input[type="submit"] {
-            margin: 5px 0;
-            padding: 8px;
-            border-radius: 4px;
-            border: 1px solid #ccc;
-            width: 100%;
-            box-sizing: border-box;
-        }
-        input[type="submit"] {
-            background-color: #0400fdd8;
-            color: white;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-        }
-        input[type="submit"]:hover {
-            background-color: #0400fdd8;
-        }
-        /* Стили для кнопок ссылок */
-        .link-button {
-            display: inline-block;
-            padding: 12px 20px;
-            text-decoration: none;
-            border-radius: 6px;
-            border: 1px solid #ccc;
-            background-color: #f0f0f0;
-            color: #333;
-            margin-bottom: 10px;
-            transition: background-color 0.3s ease;
-            margin-right: 10px;
-            font-size: 18px;
-        }
-        .link-button:hover {
-            background-color: #e0e0e0;
-        }
-
         .button-container {
             text-align: center;
             margin-top: 20px;
         }
-
+        .link-button {
+            display: inline-block;
+            padding: 15px 25px;
+            text-decoration: none;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+            background-color: #f0f0f0;
+            color: #333;
+            margin-bottom: 10px;
+            transition: background-color 0.3s ease, color 0.3s ease;
+            margin-right: 10px;
+            font-size: 20px;
+        }
+        .link-button:hover {
+            background-color: #1565c0;
+            color: white;
+            transform: scale(1.1);
+        }
+        .logout-button {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            padding: 10px 20px;
+            text-decoration: none;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+            background-color: #f0f0f0;
+            color: #333;
+            font-size: 16px;
+        }
+        .logout-button:hover {
+            background-color: #d32f2f;
+            color: white;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        tr:hover {
+            background-color: #f2f2f2;
+        }
     </style>
 </head>
 <body>
-    <h1>Admin Board</h1>
+    <h1>Администрирование</h1>
+    <a href="/admin/logout/" class="logout-button">Выйти</a>
+    <div class="button-container">
+        <a href="/admin/update/" class="link-button">Изменить</a>
+        <a href="/admin/delete/" class="link-button">Удалить</a>
+        <a href="/admin/add/" class="link-button">Добавить</a>
+    </div>
 
-    <!-- Кнопки ссылок -->
-    <a href="/admin/update/" class="link-button">Изменить</a>
-    <a href="/admin/delete/" class="link-button">Удалить</a>
-    <a href="/admin/add/" class="link-button">Добавить</a>
-    <a href="/admin/see/" class="link-button">Просмотреть</a>
+    <table>
+        <thead>
+            <tr>
+                <th>User ID</th>
+                <th>Username</th>
+                <th>Lastname</th>
+                <th>Email</th>
+                <th>Registration Date</th>
+                <th>Role</th>
+            </tr>
+        </thead>
+        <tbody>
+            {{range .}}
+            <tr>
+                <td>{{.UserID}}</td>
+                <td>{{.Username}}</td>
+                <td>{{.UserLastname}}</td>
+                <td>{{.Email}}</td>
+                <td>{{.RegistrationDate}}</td>
+                <td>{{.Role}}</td>
+            </tr>
+            {{end}}
+        </tbody>
+    </table>
 </body>
 </html>
+
+
+
 
 
 

@@ -1,138 +1,112 @@
 <!DOCTYPE html>
-<html lang="en">
-
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Покупка билета</title>
+    <title>Страница покупки билетов</title>
     <style>
+        /* Стили */
         body {
             font-family: Arial, sans-serif;
-            margin: 20px;
-            background-color: #f7f7f7;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 20px;
         }
-
         h1 {
             text-align: center;
-            margin-bottom: 30px;
             color: #333;
         }
-
-        form {
-            max-width: 400px;
-            margin: 0 auto;
+        table {
+            width: 80%;
+            margin: 20px auto;
+            border-collapse: collapse;
             background-color: #fff;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         }
-
-        label {
-            display: block;
-            margin-bottom: 10px;
-            color: #333;
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
         }
-
-        input[type="text"],
-        select {
-            width: calc(100% - 12px);
-            padding: 8px;
-            margin-bottom: 15px;
-            border-radius: 3px;
-            border: 1px solid #ccc;
+        th {
+            background-color: #f2f2f2;
         }
-
-        button[type="submit"] {
-            width: 100%;
-            padding: 10px;
-            border: none;
-            border-radius: 3px;
-            background-color: #1565c0;
+        tr:hover {
+            background-color: #f9f9f9;
+        }
+        .buy-button {
+            padding: 8px 12px;
+            border-radius: 5px;
+            text-decoration: none;
             color: #fff;
-            cursor: pointer;
+            background-color: #007bff;
             transition: background-color 0.3s ease;
         }
-
-        button[type="submit"]:hover {
-            background-color: #1e88e5;
+        .buy-button:hover {
+            background-color: #0056b3;
         }
-
-        /* Стили для всплывающего уведомления */
-        .notification {
-            display: none;
-            position: fixed;
-            top: 10px;
-            left: 50%;
-            transform: translateX(-50%);
-            background-color: #4caf50;
-            color: white;
-            padding: 15px;
+        .back-button {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+        }
+        .back-button a {
+            display: inline-block;
+            padding: 8px 12px;
             border-radius: 5px;
-            box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.3);
+            text-decoration: none;
+            color: #fff;
+            background-color: #007bff;
+            transition: background-color 0.3s ease;
+        }
+        .back-button a:hover {
+            background-color: #0056b3;
         }
     </style>
 </head>
-
 <body>
-    <h1>Покупка билета на рейс</h1>
-    <form id="purchaseForm">
-        <label for="flightID">Введите ID рейса:</label>
-        <input type="text" id="flightID" name="flightID" required>
-        <br><br>
-        <label for="passengerName">Введите ваше имя:</label>
-        <input type="text" id="passengerName" name="passengerName" required>
-        <br><br>
-        <label for="paymentMethod">Выберите метод оплаты:</label>
-        <select id="paymentMethod" name="paymentMethod" required>
-            <option value="credit">Кредитная карта</option>
-            <option value="debit">Дебетовая карта</option>
-            <option value="paypal">PayPal</option>
-            <option value="cash">Наличные</option>
-        </select>
-        <br><br>
-        <button type="submit">Оплатить</button>
-    </form>
 
-    <div id="notification" class="notification">
-        Спасибо за покупку!
+    <div class="back-button">
+        <a href="/dashboard/" style="background-color: #007bff;">Назад</a>
     </div>
+    
+    <h1>Билеты</h1>
 
-    <script>
-        document.getElementById('purchaseForm').addEventListener('submit', function (e) {
-            e.preventDefault(); // Предотвращаем обычное поведение отправки формы
+    <table id="seatsTable">
+        <tr>
+            <th>Место</th>
+            <th>Цена</th>
+            <th>Действие</th>
+        </tr>
+        {{ range .SeatPrices }}
+        <tr>
+            <td>{{ .SeatNumber }}</td>
+            <td>{{ .TicketPrice }}</td>
+            <td><a href="/buy?flightName={{ .FlightName }}&seat={{ .SeatNumber }}" class="buy-button">Купить</a></td>
+        </tr>
+        {{ end }}
+    </table>
 
-            // Получаем данные из формы
-            const formData = new FormData(this);
+    <h1>VIP билеты</h1>
 
-            // Отправляем данные на сервер без перезагрузки страницы
-            fetch('/purchase/', {
-                method: 'POST',
-                body: formData
-            })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Ошибка сети');
-                }
-                return response.text();
-            })
-            .then(data => {
-                // Показываем всплывающее уведомление
-                document.getElementById('notification').style.display = 'block';
-
-                // Через 3 секунды скрываем уведомление
-                setTimeout(function () {
-                    document.getElementById('notification').style.display = 'none';
-                }, 3000);
-
-                // Обработка успешного ответа от сервера, если требуется
-                console.log(data);
-            })
-            .catch(error => {
-                // Обработка ошибки, если требуется
-                console.error('Произошла ошибка:', error);
-            });
-        });
-    </script>
-</body
-
+    <table id="vipSeatsTable">
+        <tr>
+            <th>Место</th>
+            <th>Цена</th>
+            <th>Обед</th>
+            <th>Алкоголь</th>
+            <th>Консьерж</th>
+            <th>Действие</th>
+        </tr>
+        {{ range .VipSeatPrices }}
+        <tr>
+            <td>{{ .SeatNumber }}</td>
+            <td>{{ .TicketPrice }}</td>
+            <td>{{ .MealChoice }}</td>
+            <td>{{ .DrinkAlkohol }}</td>
+            <td>{{ .PersonalConcierge }}</td>
+            <td><a href="/buy?flightName={{ .FlightName }}&seat={{ .SeatNumber }}" class="buy-button">Купить</a></td>
+        </tr>
+        {{ end }}
+    </table>
+</body>
+</html>
 

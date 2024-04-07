@@ -5,11 +5,49 @@
     <meta charset="UTF-8">
     <title>Рейсы</title>
     <style>
-        /* Стили */
+        /* Общие стили */
         body {
             font-family: Arial, sans-serif;
-            margin: 20px;
+            margin: 0;
+            padding: 0;
             background-color: #f7f7f7;
+        }
+
+        .header {
+            display: flex;
+            justify-content: flex-end;
+            padding: 10px;
+            background-color: #fff;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .header-links {
+            display: flex;
+            gap: 10px;
+        }
+
+        .logout-button {
+            padding: 8px 12px;
+            border-radius: 5px;
+            text-decoration: none;
+            color: #fff;
+        }
+
+        .logout-button:nth-child(1) {
+            background-color: #007bff;
+        }
+
+        .logout-button:nth-child(2) {
+            background-color: #dc3545;
+        }
+
+        .content {
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.1);
         }
 
         h1 {
@@ -18,6 +56,16 @@
             color: #333;
         }
 
+        /* Остальные стили остаются без изменений */
+        form {
+            max-width: 400px;
+            margin: 0 auto;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Остальные стили остаются без изменений */
         form {
             max-width: 400px;
             margin: 0 auto;
@@ -64,7 +112,8 @@
             background-color: #fff;
         }
 
-        th, td {
+        th,
+        td {
             padding: 12px;
             text-align: left;
             border-bottom: 1px solid #ddd;
@@ -82,68 +131,58 @@
         tr:hover {
             background-color: #e0e0e0;
         }
-
-        .buy-link {
-            display: inline-block;
-            border: 1px solid #ccc;
-            background-color: #f0f0f0;
-            padding: 8px 15px;
-            text-decoration: none;
-            color: #333;
-            border-radius: 3px;
-            transition: background-color 0.3s ease;
-            margin-top: 20px;
-        }
-
-        .buy-link:hover {
-            background-color: #af1212;
-            color: white;
-        }
     </style>
 </head>
 
 <body>
+    <div class="header-links">
+        <a href="/profile" class="logout-button">Профиль</a>
+        <a href="/dashboard/logout/" class="logout-button">Выйти</a>
+    </div>
     <h1>Рейсы</h1>
     <form method="GET">
-        <label for="departure">Departure Airport:</label>
+        <label for="departure"> Откуда:</label>
         <input type="text" id="departure" name="departure">
 
-        <label for="arrival">Arrival Airport:</label>
+        <label for="arrival"> Куда:</label>
         <input type="text" id="arrival" name="arrival">
 
-        <input type="submit" value="Search">
+        <input type="submit" value="Поиск">
     </form>
     <table>
         <thead>
             <tr>
-                <th>Airline</th>
-                <th>Departure Time</th>
-                <th>Arrival Time</th>
-                <th>Departure Airport</th>
-                <th>Arrival Airport</th>
-                <th>Ticket Price</th>
-                <th>Tickets</th>
+                <th>Номер рейса</th>
+                <th>Авиалиния</th>
+                <th>Количество мест</th>
+                <th>Самолет</th>
+                <th>Город отправления</th>
+                <th>Аэропорт</th>
+                <th>Время</th>
+                <th>Город прибытия</th>
+                <th>Аэропорт</th>
+                <th>Время прибытия</th>
+                <th>Стоимость билета от</th>
             </tr>
         </thead>
         <tbody>
             {{ range . }}
-            <tr>
+            <tr onclick="window.location='/buy?flightName={{ .FlightName }}';" style="cursor: pointer;">
+                <td>{{ .FlightName }}</td>
                 <td>{{ .Airline }}</td>
-                <td>{{ .DepartureTime }}</td>
-                <td>{{ .ArrivalTime }}</td>
+                <td>{{ .TotalSeats }}</td>
+                <td>{{ .AircraftModel }}</td>
+                <td>{{ .DepartureCity }}</td>
                 <td>{{ .DepartureAirport }}</td>
-                <td>{{ .ArrivalAirport }}</td>
-                <td>{{ .TicketPrice }}</td>
-                <td>{{ .Tickets }}</td>
+                <td>{{ .DepartureTime }}</td>
+                <td>{{ .ArrivalCity }}</td>
+                <td>{{ .ArrivalAirport }}</td>                
+                <td>{{ .ArrivalTime }}</td>
+                <td>{{ .MinTicketPrice }}</td>
             </tr>
             {{ end }}
         </tbody>
     </table>
-    <a href="/buy/" class="buy-link">Покупка билета</a>
 </body>
 
 </html>
-
-
-
-

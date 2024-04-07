@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Профиль</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            line-height: 1.6;
+            margin: 20px;
+            background-color: #f7f7f7;
+            color: #333;
+        }
+        
+        h1 {
+            color: #333;
+            text-align: center;
+            font-size: 32px;
+            margin-bottom: 10px;
+        }
+        
+        p {
+            margin-bottom: 5px;
+            font-size: 18px;
+        }
+        
+        .profile-info {
+            background-color: #f2f2f2;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+        
+        h2 {
+            color: #333;
+            text-align: center;
+            margin-top: 40px;
+            font-size: 24px;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        
+        th, td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: left;
+        }
+        
+        th {
+            background-color: #f2f2f2;
+            font-weight: bold;
+        }
+        
+        .confirmation-message {
+            margin-top: 20px;
+            font-style: italic;
+            color: #888;
+            text-align: center;
+        }
+        
+        .button-container {
+            margin-top: 20px;
+            text-align: center;
+        }
+        
+        .button {
+            padding: 8px 16px;
+            margin: 0 5px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        
+        .button:hover {
+            background-color: #0056b3;
+        }
+
+        .edit-button {
+            background-color: #007bff;
+            color: #fff;
+        }
+
+        .edit-button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="profile-info">
+        <h1>Ваш профиль</h1>
+        <p>Добро пожаловать, {{ .UserName }} {{ .UserLastname }}!</p>
+        <p>Email: {{ .Email }}</p>
+        <div class="button-container">
+            <button class="button edit-button" onclick="editProfile()">Редактировать профиль</button>
+        </div>
+    </div>
+
+    <h2>Ваши брони:</h2>
+    <table>
+        <tr>
+            <th>Рейс</th>
+            <th>Цена билета</th>
+            <th>Место</th>
+            <th>Статус</th>
+        </tr>
+        {{ range .Bookings }}
+        <tr>
+            <td>{{ .FlightName }}</td>
+            <td>{{ .TicketPrice }}</td>
+            <td>{{ .SeatNumber }}</td>
+            <td>{{ .BookingStatus }}</td>
+        </tr>
+        {{ end }}
+    </table>
+
+    <p class="confirmation-message">Для подтверждения бронирования позвоните на номер 8(800)555-35-35</p>
+
+    <div class="button-container">
+        <button class="button" onclick="goBack()">Назад</button>
+        <button class="button" onclick="logout()">Выйти</button>
+    </div>
+
+    <script>
+        function goBack() {
+            window.location.href = '/dashboard/';
+        }
+
+        function logout() {
+            window.location.href = '/dashboard/logout/';
+        }
+
+        function editProfile() {
+            window.location.href = '/profile/edit/';
+        }
+    </script>
+</body>
+
+</html>

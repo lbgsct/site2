@@ -43,6 +43,11 @@
             border-radius: 3px;
             border: 1px solid #ccc;
         }
+        .error-message {
+            color: red;
+            margin-top: 5px;
+            display: none;
+        }
         input[type="submit"] {
             width: 150px;
             padding: 10px;
@@ -57,20 +62,59 @@
         input[type="submit"]:hover {
             background-color: #d63030;
         }
+        .link-button {
+            display: inline-block;
+            padding: 12px 20px;
+            text-decoration: none;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+            background-color: #f0f0f0;
+            color: #333;
+            margin-bottom: 10px;
+            transition: background-color 0.3s ease;
+            margin-right: 10px;
+            font-size: 18px;
+        }
+        .link-button:hover {
+            background-color: #e0e0e0;
+        }
+
+        .button-container {
+            text-align: center;
+            margin-top: 20px;
+        }
     </style>
 </head>
 <body>
     <div class="container">
         <h1>Войдите в профиль</h1>
-        <form method="post">
-            <label for="user_name">Email:</label><br>
-            <input type="text" id="user_name" name="user_name"><br>
+        <form method="post" action="/login/" onsubmit="return validateForm()">
+            <label for="email">Email:</label><br>
+            <input type="text" id="email" name="email" pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$" required>
+            <span class="error-message" id="email-error">Введите корректный email</span><br>
         
             <label for="password">Пароль:</label><br>
-            <input type="password" id="password" name="password"><br><br>
+            <input type="password" id="password" name="password" required><br><br>
         
-            <input type="submit" value="Войти">
+            <input type="submit" value="Войти" class="link-button">
         </form>
     </div>
+
+    <script>
+        function validateForm() {
+            var emailInput = document.getElementById('email');
+            var emailError = document.getElementById('email-error');
+
+            var emailPattern = /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+
+            if (!emailPattern.test(emailInput.value)) {
+                emailError.style.display = 'block';
+                return false;
+            } else {
+                emailError.style.display = 'none';
+                return true;
+            }
+        }
+    </script>
 </body>
 </html>

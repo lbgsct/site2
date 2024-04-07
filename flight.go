@@ -3,10 +3,10 @@ package main
 import (
 	"database/sql"
 	"html/template"
-	"log"
+		"log"
 	"net/http"
 	"strconv"
-	"time"
+    "time"
 	_ "github.com/lib/pq"
 )
 
@@ -14,7 +14,7 @@ import (
 func DashboardPage(w http.ResponseWriter, r *http.Request) {
 	var rows *sql.Rows
 	var err error
-
+	
 	// Получаем параметры запроса
 	queryParams := QueryParams{
 		Departure: r.FormValue("departure"),
@@ -29,12 +29,12 @@ func DashboardPage(w http.ResponseWriter, r *http.Request) {
 	var args []interface{}
 
 	if doSearch {
-		query = "SELECT * FROM AvailableFlights WHERE"
+		query = "SELECT * FROM UserFlights WHERE"
 		args = []interface{}{}
 
 		// Если есть Departure в запросе
 		if queryParams.Departure != "" {
-			query += " departure_airport = $1"
+			query += " departure_city = $1"
 			args = append(args, queryParams.Departure)
 		}
 
@@ -43,7 +43,7 @@ func DashboardPage(w http.ResponseWriter, r *http.Request) {
 			if len(args) > 0 {
 				query += " AND"
 			}
-			query += " arrival_airport = $" + strconv.Itoa(len(args)+1)
+			query += " arrival_city = $" + strconv.Itoa(len(args)+1)
 			args = append(args, queryParams.Arrival)
 		}
 
@@ -51,7 +51,7 @@ func DashboardPage(w http.ResponseWriter, r *http.Request) {
 		if queryParams.Date != "" {
 			parsedDate, err := time.Parse("2006-01-02T15:04", queryParams.Date)
 			if err != nil {
-				http.Error(w, "Invalid date format", http.StatusBadRequest)
+				http.Error(w, "Неправильный формат даты", http.StatusBadRequest)
 				log.Println(err)
 				return
 			}
@@ -65,52 +65,64 @@ func DashboardPage(w http.ResponseWriter, r *http.Request) {
 
 		rows, err = db.Query(query, args...)
 		if err != nil {
-			http.Error(w, "Internal server error", http.StatusInternalServerError)
+			http.Error(w, "Внутренняя ошибка сервера", http.StatusInternalServerError)
 			log.Println(err)
 			return
 		}
 		defer rows.Close()
 	} else {
-		rows, err = db.Query("SELECT * FROM AvailableFlights")
+		rows, err = db.Query("SELECT * FROM UserFlights")
 		if err != nil {
-			http.Error(w, "Internal server error", http.StatusInternalServerError)
+			http.Error(w, "Внутренняя ошибка сервера", http.StatusInternalServerError)
 			log.Println(err)
 			return
 		}
 		defer rows.Close()
 	}
 
-	var availableFlights []AvailableFlight
+	var userFlights []UserFlights
 
 	for rows.Next() {
-		var flight AvailableFlight
+		var flight UserFlights
+		var minTicketPrice sql.NullFloat64 
 		err := rows.Scan(
-			&flight.FlightID,
+			&flight.FlightName,
 			&flight.Airline,
-			&flight.DepartureTime,
-			&flight.ArrivalTime,
+			&flight.TotalSeats,
+			&flight.AircraftModel,
+			&flight.DepartureCity,
 			&flight.DepartureAirport,
+			&flight.DepartureTime,
+			&flight.ArrivalCity,
 			&flight.ArrivalAirport,
-			&flight.TicketPrice,
+			&flight.ArrivalTime,
+			&minTicketPrice,
 		)
 		if err != nil {
-			http.Error(w, "Internal server error", http.StatusInternalServerError)
+			http.Error(w, "Внутренняя ошибка сервера", http.StatusInternalServerError)
 			log.Println(err)
 			return
 		}
-		availableFlights = append(availableFlights, flight)
+
+		if minTicketPrice.Valid {
+            flight.MinTicketPrice = minTicketPrice.Float64
+        } else {
+            flight.MinTicketPrice = 0 // Устанавливаем значение по умолчанию для NULL
+        }
+
+		userFlights = append(userFlights, flight)
 	}
 
 	tmpl, err := template.ParseFiles("/home/sergey/site2/templates/dash_board.html")
 	if err != nil {
-		http.Error(w, "Internal server error", http.StatusInternalServerError)
+		http.Error(w, "Внутренняя ошибка сервера", http.StatusInternalServerError)
 		log.Println(err)
 		return
 	}
 
-	err = tmpl.Execute(w, availableFlights)
+	err = tmpl.Execute(w, userFlights)
 	if err != nil {
-		http.Error(w, "Internal server error", http.StatusInternalServerError)
+		http.Error(w, "Внутренняя ошибка сервера", http.StatusInternalServerError)
 		log.Println(err)
 	}
 }

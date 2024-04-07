@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Admin Form</title>
+    <title>Добавление</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -20,6 +20,32 @@
         }
         h2 {
             margin-top: 0;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            background-color: #fff;
+        }
+
+        th,
+        td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+            color: #333;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f5f5f5;
+        }
+
+        tr:hover {
+            background-color: #e0e0e0;
         }
         input[type="text"],
         input[type="datetime-local"],
@@ -41,6 +67,44 @@
         input[type="submit"]:hover {
             background-color: #0400fdd8;
         }
+        .form-container {
+            width: 50%;
+            margin: 0 auto;
+        }
+
+        form {
+            display: table;
+            width: 100%;
+        }
+
+        form table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        form table tr {
+            display: table-row;
+        }
+
+        form table td {
+            display: table-cell;
+            padding: 8px;
+        }
+
+        form table td label {
+            display: inline-block;
+            width: 40%;
+            text-align: right;
+            margin-right: 10px;
+        }
+
+        form table td input[type="text"],
+        form table td input[type="datetime-local"] {
+            width: 100%;
+            padding: 6px;
+            box-sizing: border-box;
+        }
+
         /* Стили для кнопок ссылок */
         .link-button {
             display: inline-block;
@@ -63,48 +127,296 @@
             text-align: center;
             margin-top: 20px;
         }
+        .logout-button {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            padding: 10px 20px;
+            text-decoration: none;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+            background-color: #f0f0f0;
+            color: #333;
+            font-size: 16px;
+        }
+        .logout-button:hover {
+            background-color: #d32f2f;
+            color: white;
+        }
+
+        .back-button {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            padding: 10px 20px;
+            text-decoration: none;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+            background-color: #f0f0f0;
+            color: #333;
+            font-size: 16px;
+        }
+        .back-button:hover {
+            background-color: #0400fdd8;
+            color: white;
+        }
     </style>
 </head>
 <body>
-    <h1>Add Flight or Airport</h1>
+    <h1>Добавление</h1>
+    <div class="navigation">
+        <a href="/admin/logout/" class="logout-button">Выйти</a>
+        <a href="/admin/" class="back-button">Назад</a>
+    </div>
+
+    <h2>Список рейсов</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Название рейса</th>
+                <th>Авиакомпания</th>
+                <th>Модель самолета</th>
+                <th>Аэропорт отправления</th>
+                <th>Аэропорт прибытия</th>
+                <th>Время отправления</th>
+                <th>Время прибытия</th>
+                <th>Дистанция</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Вставка данных в HTML таблицу -->
+            {{range .Flights}}
+            <tr>
+                <td>{{.FlightName}}</td>
+                <td>{{.Airline}}</td>
+                <td>{{.AircraftModel}}</td>
+                <td>{{.DepartureAirport}}</td>
+                <td>{{.ArrivalAirport}}</td>
+                <td>{{.DepartureTime}}</td>
+                <td>{{.ArrivalTime}}</td>
+                <td>{{.Destination}}</td>
+            </tr>
+            {{end}}
+        </tbody>
+    </table>
+
+    <div class="form-container">
+        <form action="/admin/add/" method="post">
+            <input type="hidden" name="action" value="addFlight">
+    
+            <table>
+                <tr>
+                    <td><label for="flightName">Название рейса:</label></td>
+                    <td><input type="text" id="flightName" name="flightName"></td>
+                </tr>
+                <tr>
+                    <td><label for="airline">Авиакомпания:</label></td>
+                    <td><input type="text" id="airline" name="airline"></td>
+                </tr>
+                <tr>
+                    <td><label for="aircraftModel">Модель самолета:</label></td>
+                    <td><input type="text" id="aircraftModel" name="aircraftModel"></td>
+                </tr>
+                <tr>
+                    <td><label for="departureAirport">Аэропорт отправления:</label></td>
+                    <td><input type="text" id="departureAirport" name="departureAirport"></td>
+                </tr>
+                <tr>
+                    <td><label for="arrivalAirport">Аэропорт прибытия:</label></td>
+                    <td><input type="text" id="arrivalAirport" name="arrivalAirport"></td>
+                </tr>
+                <tr>
+                    <td><label for="departureTime">Время отправления:</label></td>
+                    <td><input type="datetime-local" id="departureTime" name="departureTime"></td>
+                </tr>
+                <tr>
+                    <td><label for="arrivalTime">Время прибытия:</label></td>
+                    <td><input type="datetime-local" id="arrivalTime" name="arrivalTime"></td>
+                </tr>
+                <tr>
+                    <td><label for="destination">Расстояние:</label></td>
+                    <td><input type="text" id="destination" name="destination"></td>
+                </tr>
+                <tr>
+                    <td colspan="2" style="text-align: center;"><input type="submit" value="Добавить рейс"></td>
+                </tr>
+            </table>
+        </form>
+    </div>
+    
+    <h2>Список аэропортов</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Название аэропорта</th>
+                <th>Город</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Вставка данных в HTML таблицу -->
+            {{range .Airports}}
+            <tr>
+                <td>{{.AirportName}}</td>
+                <td>{{.AirportCity}}</td>
+            </tr>
+            {{end}}
+        </tbody>
+    </table>
+    
+    <div class="form-container">
+        <form action="/admin/add/" method="post">
+            <input type="hidden" name="action" value="addAirport">
+    
+            <table>
+                <tr>
+                    <td><label for="airport_name">Название аэропорта:</label></td>
+                    <td><input type="text" id="airport_name" name="airport_name" required></td>
+                </tr>
+                <tr>
+                    <td> <label for="airport_city">Город:</label></td>
+                    <td><input type="text" id="airport_city" name="airport_city" required></td>
+                </tr>
+                <tr>
+                    <td colspan="2" style="text-align: center;"><input type="submit" value="Добавить аэропорт"></td>
+                </tr>
+            </table>
+        </form>
+    </div>
+
+
+    <h2>Список билетов</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Рейс</th>
+                <th>Цена</th>
+                <th>Место</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Вставка данных в HTML таблицу -->
+            {{range .Tickets}}
+            <tr>
+                <td>{{.FlightName}}</td>
+                <td>{{.Price}}</td>
+                <td>{{.SeatNumber}}</td>
+            </tr>
+            {{end}}
+        </tbody>
+    </table>
+    
+    <div class="form-container">
+        <form action="/admin/add/" method="post">
+            <input type="hidden" name="action" value="addTickets">
+    
+            <table>
+                <tr>
+                    <td><label for="flight_name">Рейс:</label></td>
+                    <td><input type="text" id="flight_name" name="flight_name" required></td>
+                </tr>
+                <tr>
+                    <td> <label for="price">Стоимость:</label></td>
+                    <td><input type="text" id="price" name="price" required></td>
+                </tr>
+                <tr>
+                    <td><label for="seat_number">Место:</label></td>
+                    <td><input type="text" id="seat_number" name="seat_number" required></td>
+                </tr>
+                <tr>
+                    <td colspan="2" style="text-align: center;"><input type="submit" value="Добавить билет"></td>
+                </tr>
+            </table>
+        </form>
+    </div>
+
+
+    <h2>Список VIP билетов</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Рейс</th>
+                <th>Цена</th>
+                <th>Место</th>
+                <th>Обед</th>
+                <th>Алкоголь</th>
+                <th>Консьерж</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Вставка данных в HTML таблицу -->
+            {{range .VipTickets}}
+            <tr>
+                <td>{{.FlightName}}</td>
+                <td>{{.Price}}</td>
+                <td>{{.SeatNumber}}</td>
+                <td>{{.MealChoice}}</td>
+                <td>{{.DrinkAlkohol}}</td>
+                <td>{{.PersonalConcierge}}</td>
+            </tr>
+            {{end}}
+        </tbody>
+    </table>
     <form action="/admin/add/" method="post">
-        <input type="hidden" name="action" value="addFlight">
-        <label for="airline">Airline:</label>
-        <input type="text" id="airline" name="airline" required><br>
+        <input type="hidden" name="action" value="addVipTickets">
         
-        <label for="departure_time">Departure Time (YYYY-MM-DDTHH:MM):</label>
-        <input type="text" id="departure_time" name="departure_time" required><br>
+        <label for="flight_name">Рейс:</label>
+        <input type="text" id="flight_name" name="flight_name" required><br>
         
-        <label for="arrival_time">Arrival Time (YYYY-MM-DDTHH:MM):</label>
-        <input type="text" id="arrival_time" name="arrival_time" required><br>
+        <label for="price">Стоимость:</label>
+        <input type="text" id="price" name="price" required><br>    
+
+        <label for="seat_number">Место:</label>
+        <input type="text" id="seat_number" name="seat_number" required><br> 
         
-        <label for="origin">Origin:</label>
-        <input type="text" id="origin" name="origin" required><br>
+        <label for="meal_choice">Обед:</label>
+        <input type="text" id="meal_choice" name="meal_choice" required><br>
+
+        <label for="drink_alcohol_choice">Алкоголь:</label>
+        <input type="text" id="drink_alcohol_choice" name="drink_alcohol_choice" required><br>
+
+        <label for="personal_concierge">Персональный консьерж:</label>
+        <select id="personal_concierge" name="personal_concierge">
+            <option value="yes">Да</option>
+            <option value="no">Нет</option>
         
-        <label for="destination">Destination:</label>
-        <input type="text" id="destination" name="destination" required><br>
-        
-        <label for="ticket_price">Ticket Price:</label>
-        <input type="number" id="ticket_price" name="ticket_price" required><br>
-        
-        <input type="submit" value="Add Flight">
+        <input type="submit" value="Добавить vip билет">
     </form>
 
+    <h2>Список Самолетов</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Модель</th>
+                <th>Количество мест</th>
+                <th>Состояние</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Вставка данных в HTML таблицу -->
+            {{range .Aircrafts}}
+            <tr>
+                <td>{{.AircraftModel}}</td>
+                <td>{{.TotalSeats}}</td>
+                <td>{{.AircraftCondition}}</td>
+            </tr>
+            {{end}}
+        </tbody>
+    </table>
+
     <form action="/admin/add/" method="post">
-        <input type="hidden" name="action" value="addAirport">
-        <label for="airport_code">Airport Code:</label>
-        <input type="text" id="airport_code" name="airport_code" required><br>
+        <input type="hidden" name="action" value="addAircraft">
         
-        <label for="airport_name">Airport Name:</label>
-        <input type="text" id="airport_name" name="airport_name" required><br>
+        <label for="aircraft_model">Модель самолета:</label>
+        <input type="text" id="aircraft_model" name="aircraft_model" required><br>
         
-        <label for="location">Location:</label>
-        <input type="text" id="location" name="location" required><br>
+        <label for="total_seats">Количество мест:</label>
+        <input type="text" id="total_seats" name="total_seats" required><br>    
+
+        <label for="aircraft_condition">Состояние:</label>
+        <input type="text" id="aircraft_condition" name="aircraft_condition" required><br>  
         
-        <label for="other_characteristics">Other Characteristics:</label>
-        <input type="text" id="other_characteristics" name="other_characteristics"><br>
-        
-        <input type="submit" value="Add Airport">
+        <input type="submit" value="Добавить самолет">
     </form>
+
 </body>
 </html>
