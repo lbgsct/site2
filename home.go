@@ -17,6 +17,7 @@ func HomePage(w http.ResponseWriter, r *http.Request) {
 		log.Println(err)
 		return
 	}
+	
 	// Отображаем страницу
 	err = tmpl.Execute(w, nil)
 	if err != nil {
